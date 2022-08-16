@@ -1,0 +1,727 @@
+{
+	"info": {
+		"_postman_id": "9f99ad2b-3a19-4c8f-b583-227fa3ca126d",
+		"name": "Assignment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22756414"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"item": [
+				{
+					"name": "GetBookingIds",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/booking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookingIdsByFirstNameAndLastName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/booking?firstname=Joe&lastname=Doe",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "Joe"
+								},
+								{
+									"key": "lastname",
+									"value": "Doe"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookingIdsByCheckInAndCheckOut",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/booking?checkin=2014-03-13&checkout=2014-05-21",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							],
+							"query": [
+								{
+									"key": "checkin",
+									"value": "2014-03-13"
+								},
+								{
+									"key": "checkout",
+									"value": "2014-05-21"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"let schema = {",
+							"    \"type\": \"array\",",
+							"    \"items\": {",
+							"        \"type\": \"object\",",
+							"        \"required\": [",
+							"            \"bookingid\",",
+							"            ",
+							"        ],",
+							"        \"properties\": {",
+							"            \"bookingid\": {",
+							"                \"type\": \"integer\"",
+							"            }",
+							"        }",
+							"    }",
+							"}",
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test('Data type is Array', function () {",
+							"pm.expect(Array.isArray(jsonData)).to.eql(true);",
+							"});",
+							"",
+							" if (jsonData.length > 1){",
+							"     pm.test('Data Array contains objects', ()=>{",
+							" let firstEntity = jsonData[1];",
+							" let typeOfFirstEntity = typeof firstEntity;",
+							" console.log(typeOfFirstEntity);",
+							" pm.expect(typeOfFirstEntity).to.eql('object');",
+							"});",
+							"",
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"bookingid\");",
+							"});",
+							"pm.test('Schema is valid', ()=>{",
+							"pm.response.to.have.jsonSchema(schema);",
+							"});",
+							"",
+							" }"
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "POST",
+			"item": [
+				{
+					"name": "CreateBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let schema = {",
+									"    \"type\": \"object\",",
+									"    \"required\": [",
+									"        \"bookingid\",",
+									"        \"booking\"",
+									"    ],",
+									"    \"properties\": {",
+									"        \"bookingid\": {",
+									"            \"type\": \"integer\"",
+									"        },",
+									"        \"booking\": {",
+									"            \"type\": \"object\",",
+									"            \"required\": [",
+									"                \"firstname\",",
+									"                \"lastname\",",
+									"                \"totalprice\",",
+									"                \"depositpaid\",",
+									"                \"bookingdates\",",
+									"                ",
+									"            ],",
+									"            \"properties\": {",
+									"                \"firstname\": {",
+									"                    \"type\": \"string\"",
+									"                },",
+									"                \"lastname\": {",
+									"                    \"type\": \"string\"",
+									"                },",
+									"                \"totalprice\": {",
+									"                    \"type\": \"integer\"",
+									"                },",
+									"                \"depositpaid\": {",
+									"                    \"type\": \"boolean\"",
+									"                },",
+									"                \"bookingdates\": {",
+									"                    \"type\": \"object\",",
+									"                    \"required\": [",
+									"                        \"checkin\",",
+									"                        \"checkout\"",
+									"                    ],",
+									"                    \"properties\": {",
+									"                        \"checkin\": {",
+									"                            \"type\": \"string\"",
+									"                        },",
+									"                        \"checkout\": {",
+									"                            \"type\": \"string\"",
+									"                        }",
+									"                    }",
+									"                },",
+									"                \"additionalneeds\": {",
+									"                    \"type\": \"string\"",
+									"                }",
+									"            }",
+									"        }",
+									"    }",
+									"}",
+									"if (pm.response.status ==\"OK\") {",
+									"    pm.test('Schema is valid', ()=>{",
+									"pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"aamir\",\n    \"lastname\" : \"baba\",\n    \"totalprice\" : 1111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUT",
+			"item": [
+				{
+					"name": "UpdateBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let schema = {",
+									"    ",
+									"    \"type\": \"object\",",
+									"    \"required\": [",
+									"        \"firstname\",",
+									"        \"lastname\",",
+									"        \"totalprice\",",
+									"        \"depositpaid\",",
+									"        \"bookingdates\",",
+									"        ",
+									"    ],",
+									"    \"properties\": {",
+									"        \"firstname\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"lastname\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"totalprice\": {",
+									"            \"type\": \"integer\"",
+									"        },",
+									"        \"depositpaid\": {",
+									"            \"type\": \"boolean\"",
+									"        },",
+									"        \"bookingdates\": {",
+									"            \"type\": \"object\",",
+									"            \"required\": [",
+									"                \"checkin\",",
+									"                \"checkout\"",
+									"            ],",
+									"            \"properties\": {",
+									"                \"checkin\": {",
+									"                    \"type\": \"string\"",
+									"                },",
+									"                \"checkout\": {",
+									"                    \"type\": \"string\"",
+									"                }",
+									"            }",
+									"        },",
+									"        \"additionalneeds\": {",
+									"            \"type\": \"string\"",
+									"        }",
+									"    }",
+									"}",
+									"if (pm.response.status ==\"OK\") {",
+									"    pm.test('Schema is valid', ()=>{",
+									"pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "token=1e74e820041d85e",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\" : \"James\",\n    \"lastname\" : \"Brown\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3834"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PATCH",
+			"item": [
+				{
+					"name": "PartialUpdateBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let schema = {",
+									"    ",
+									"    \"type\": \"object\",",
+									"    \"required\": [",
+									"        \"firstname\",",
+									"        \"lastname\",",
+									"        \"totalprice\",",
+									"        \"depositpaid\",",
+									"        \"bookingdates\",",
+									"        ",
+									"    ],",
+									"    \"properties\": {",
+									"        \"firstname\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"lastname\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"totalprice\": {",
+									"            \"type\": \"integer\"",
+									"        },",
+									"        \"depositpaid\": {",
+									"            \"type\": \"boolean\"",
+									"        },",
+									"        \"bookingdates\": {",
+									"            \"type\": \"object\",",
+									"            \"required\": [",
+									"                \"checkin\",",
+									"                \"checkout\"",
+									"            ],",
+									"            \"properties\": {",
+									"                \"checkin\": {",
+									"                    \"type\": \"string\"",
+									"                },",
+									"                \"checkout\": {",
+									"                    \"type\": \"string\"",
+									"                }",
+									"            }",
+									"        },",
+									"        \"additionalneeds\": {",
+									"            \"type\": \"string\"",
+									"        }",
+									"    }",
+									"}",
+									"if (pm.response.status ==\"OK\") {",
+									"    pm.test('Schema is valid', ()=>{",
+									"pm.response.to.have.jsonSchema(schema);",
+									"});",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token=1e74e820041d85e",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstname\": \"aamir\",\n    \"lastname\": \"baba\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "3834"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE",
+			"item": [
+				{
+					"name": "DeleteBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test(\"Response has Created string\", function () {",
+									"    pm.response.to.have.body(\"Created\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token=1e74e820041d85e",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{baseUrl}}/booking/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"booking",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "007"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "GetToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									" ",
+									" let schema = {",
+									"     \"type\": \"object\",",
+									"      \"required\": [\"token\"],",
+									"     \"properties\": {",
+									"         \"token\": {",
+									"             \"type\": \"string\"",
+									"         }",
+									"        ",
+									"     }",
+									" }",
+									"",
+									"pm.test('Schema is valid', ()=>{",
+									"pm.response.to.have.jsonSchema(schema);",
+									"    });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "GetBooking",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let schema =",
+							"{",
+							"    \"type\": \"object\",",
+							"    \"required\": [",
+							"        \"firstname\",",
+							"        \"lastname\",",
+							"        \"totalprice\",",
+							"        \"depositpaid\",",
+							"        \"bookingdates\",",
+							"        ",
+							"    ],",
+							"    \"properties\": {",
+							"        \"firstname\": {",
+							"            \"type\": \"string\"",
+							"        },",
+							"        \"lastname\": {",
+							"            \"type\": \"string\"",
+							"        },",
+							"        \"totalprice\": {",
+							"            \"type\": \"integer\"",
+							"        },",
+							"        \"depositpaid\": {",
+							"            \"type\": \"boolean\"",
+							"        },",
+							"        \"bookingdates\": {",
+							"            \"type\": \"object\",",
+							"            \"required\": [",
+							"                \"checkin\",",
+							"                \"checkout\"",
+							"            ],",
+							"            \"properties\": {",
+							"                \"checkin\": {",
+							"                    \"type\": \"string\"",
+							"                },",
+							"                \"checkout\": {",
+							"                    \"type\": \"string\"",
+							"                }",
+							"            }",
+							"        },",
+							"        \"additionalneeds\": {",
+							"            \"type\": \"string\"",
+							"        }",
+							"    }",
+							"}",
+							"",
+							"if (pm.response.status ==\"OK\") {",
+							"    pm.test('Schema is valid', ()=>{",
+							"pm.response.to.have.jsonSchema(schema);",
+							"});",
+							"}",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/booking/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"booking",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "007"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer"
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://restful-booker.herokuapp.com"
+		},
+		{
+			"key": "baseUrlLocal",
+			"value": "http://localhost:3001/"
+		}
+	]
+}
